@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELEGANCE — Premium Furniture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           1. ПЕРЕМЕННЫЕ И ОСНОВА (Variables)
+           ========================================= */
+        :root {
+            --bg: #fcfbf7;
+            --text-main: #1a1a1a;
+            --text-light: #666;
+            --accent: #b89f80;
+            --accent-dark: #8e7355;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.9);
+            --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.04);
+            --radius: 15px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        html { scroll-behavior: smooth; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text-main); 
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* =========================================
+           2. ПРЕЛОАДЕР (Задание 13)
+           ========================================= */
+        .preloader {
+            position: fixed; inset: 0; background: var(--bg); z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        .preloader.hidden { opacity: 0; visibility: hidden; }
+        .preloader-circle {
+            width: 60px; height: 60px; border: 2px solid #eee;
+            border-top: 2px solid var(--accent); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* =========================================
+           3. НАВИГАЦИЯ (Задание 8)
+           ========================================= */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 30px 5%;
+            background: transparent; display: flex; justify-content: space-between;
+            align-items: center; z-index: 1000; transition: var(--transition);
+        }
+        header.scrolled {
+            padding: 15px 5%; background: var(--glass);
+            backdrop-filter: blur(15px); border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .logo { 
+            font-family: 'Playfair Display', serif; font-size: 1.8rem; 
+            font-weight: 700; cursor: pointer;
+        }
+        
+        .nav-menu { display: flex; gap: 40px; list-style: none; }
+        .nav-link { 
+            text-decoration: none; color: var(--text-main); font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;
+            position: relative; transition: 0.3s;
+        }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0;
+            height: 1px; background: var(--accent); transition: 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        .cart-trigger {
+            background: none; border: none; cursor: pointer;
+            font-family: 'Inter'; font-size: 0.8rem; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+        }
+        #cart-count {
+            background: var(--accent); color: white; padding: 2px 8px;
+            border-radius: 10px; font-size: 0.7rem;
+        }
+
+        /* =========================================
+           4. HERO (Задание 4, 12)
+           ========================================= */
+        .hero {
+            height: 100vh; display: flex; align-items: center; padding: 0 8%;
+            background: #f4f1ea; position: relative;
+        }
+        .hero-text { max-width: 650px; z-index: 10; }
+        .hero-text h1 {
+            font-family: 'Playfair Display', serif; font-size: 5rem;
+            line-height: 1.1; margin-bottom: 30px;
+        }
+        .hero-text p { font-size: 1.2rem; color: var(--text-light); margin-bottom: 45px; }
+
+        .hero-img-box {
+            position: absolute; right: 8%; width: 40%; height: 75%;
+            background: url('https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&q=80&w=1000') center/cover;
+            border-radius: 400px 400px 0 0;
+            box-shadow: 20px 20px 60px rgba(0,0,0,0.05);
+        }
+
+        /* =========================================
+           5. КНОПКИ (Задание 1, 5, 9)
+           ========================================= */
+        .btn-main {
+            padding: 20px 50px; background: var(--text-main); color: white;
+            border: none; border-radius: 50px; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .btn-main:hover { transform: translateY(-5px); background: var(--accent); }
+        .btn-main::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0; background: rgba(255,255,255,0.2);
+            border-radius: 50%; transform: translate(-50%, -50%);
+            transition: 0.5s;
+        }
+        .btn-main:active::before { width: 300px; height: 300px; opacity: 0; }
+
+        /* =========================================
+           6. КАТАЛОГ (Задание 2, 7, 14)
+           ========================================= */
+        .catalog { padding: 120px 8%; }
+        .catalog-header { text-align: center; margin-bottom: 80px; }
+        .catalog-header h2 { font-family: 'Playfair Display', serif; font-size: 3rem; }
+
+        .product-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+        .product-card {
+            background: white; border-radius: var(--radius); padding: 20px;
+            transition: var(--transition); position: relative;
+        }
+        .product-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-soft); }
+
+        .img-wrap {
+            width: 100%; height: 400px; overflow: hidden;
+            border-radius: 10px; margin-bottom: 20px;
+        }
+        .img-wrap img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 1s ease;
+        }
+        .product-card:hover .img-wrap img { transform: scale(1.1); }
+
+        .p-details { text-align: center; }
+        .p-details h3 { font-family: 'Playfair Display', serif; margin: 10px 0; }
+        .p-price { color: var(--accent); font-weight: 600; margin-bottom: 20px; }
+
+        .add-to-cart {
+            width: 100%; padding: 12px; border: 1px solid #eee;
+            background: transparent; border-radius: 30px; cursor: pointer;
+            transition: 0.3s; font-family: 'Inter'; font-weight: 500;
+        }
+        .add-to-cart:hover { border-color: var(--accent); color: var(--accent); }
+        .add-to-cart.added { background: #f0fdf4; border-color: #22c55e; color: #16a34a; }
+
+        /* =========================================
+           7. ПРЕИМУЩЕСТВА (Дополнительный объем)
+           ========================================= */
+        .features {
+            background: white; padding: 100px 8%;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px; text-align: center;
+        }
+        .feature-item h4 { font-family: 'Playfair Display'; margin-bottom: 15px; font-size: 1.4rem; }
+        .feature-item p { color: var(--text-light); font-size: 0.9rem; }
+
+        /* =========================================
+           8. ПОДВАЛ (Footer)
+           ========================================= */
+        footer {
+            background: #111; color: #777; padding: 100px 8% 50px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 60px;
+        }
+        footer h4 { color: white; font-family: 'Playfair Display'; margin-bottom: 30px; }
+        footer ul { list-style: none; }
+        footer li { margin-bottom: 15px; transition: 0.3s; cursor: pointer; }
+        footer li:hover { color: var(--accent); padding-left: 10px; }
+
+        .copyright {
+            grid-column: 1 / -1; text-align: center; padding-top: 50px;
+            border-top: 1px solid #222; margin-top: 50px; font-size: 0.8rem;
+        }
+
+        /* Стили уведомления */
+        .toast {
+            position: fixed; bottom: 30px; right: 30px; background: var(--text-main);
+            color: white; padding: 15px 30px; border-radius: 50px;
+            transform: translateY(100px); opacity: 0; transition: 0.5s; z-index: 2000;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .hero-text h1 { font-size: 3.5rem; }
+            .hero-img-box { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="preloader" id="preloader">
+        <div class="preloader-circle"></div>
+        <p style="margin-top: 20px; letter-spacing: 3px; font-size: 0.7rem;">ELEGANCE</p>
+    </div>
+
+    <div id="toast" class="toast">Товар добавлен в корзину</div>
+
+    <header id="main-header">
+        <div class="logo">ELEGANCE</div>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link">Главная</a></li>
+                <li><a href="#catalog" class="nav-link">Коллекции</a></li>
+                <li><a href="#catalog" class="nav-link">Мебель</a></li>
+            </ul>
+        </nav>
+        <button class="cart-trigger" onclick="alert('Переход в корзину...')">
+            КОРЗИНА <span id="cart-count">0</span>
+        </button>
+    </header>
+
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Минимализм в <br> каждой детали</h1>
+            <p>Премиальная коллекция мебели 2026 года. Мы создаем пространство, которое отражает ваш характер и стремление к совершенству.</p>
+            <button class="btn-main" onclick="scrollToCatalog()">Смотреть каталог</button>
+        </div>
+        <div class="hero-img-box"></div>
+    </section>
+
+    <section class="features">
+        <div class="feature-item">
+            <h4>Материалы</h4>
+            <p>Используем только натуральный массив дуба и итальянский текстиль.</p>
+        </div>
+        <div class="feature-item">
+            <h4>Экологичность</h4>
+            <p>Наше производство полностью безопасно для окружающей среды.</p>
+        </div>
+        <div class="feature-item">
+            <h4>Дизайн</h4>
+            <p>Каждый предмет разработан ведущими дизайнерами Европы.</p>
+        </div>
+    </section>
+
+    <main class="catalog" id="catalog">
+        <div class="catalog-header">
+            <h2>Новые поступления</h2>
+        </div>
+        
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="img-wrap">
+                    <img src="https://images.unsplash.com/photo-1567016432779-094069958ad5?auto=format&fit=crop&q=80&w=600" alt="Sofa">
+                </div>
+                <div class="p-details">
+                    <span style="font-size: 0.7rem; color: #999;">ГОСТИНАЯ</span>
+                    <h3>Диван "Silk Cloud"</h3>
+                    <p class="p-price">145 000 ₽</p>
+                    <button class="add-to-cart" onclick="addToCart(this)">В корзину</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="img-wrap">
+                    <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=600" alt="Chair">
+                </div>
+                <div class="p-details">
+                    <span style="font-size: 0.7rem; color: #999;">ОФИС</span>
+                    <h3>Стул "Linear Gray"</h3>
+                    <p class="p-price">32 000 ₽</p>
+                    <button class="add-to-cart" onclick="addToCart(this)">В корзину</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="img-wrap">
+                    <img src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=80&w=600" alt="Bed">
+                </div>
+                <div class="p-details">
+                    <span style="font-size: 0.7rem; color: #999;">СПАЛЬНЯ</span>
+                    <h3>Кровать "Evoque"</h3>
+                    <p class="p-price">210 000 ₽</p>
+                    <button class="add-to-cart" onclick="addToCart(this)">В корзину</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-col">
+            <h4 style="font-size: 1.8rem;">ELEGANCE.</h4>
+            <p>Ваш комфорт — наша миссия. <br> Работаем с 2015 года.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Категории</h4>
+            <ul>
+                <li>Мебель для дома</li>
+                <li>Офисные решения</li>
+                <li>Свет и декор</li>
+                <li>Текстиль</li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Следите за нами</h4>
+            <ul>
+                <li>Instagram</li>
+                <li>Pinterest</li>
+                <li>Telegram</li>
+                <li>Behance</li>
+            </ul>
+        </div>
+        <div class="copyright">
+            &copy; 2026 ELEGANCE PREMIUM HOME. Все права защищены.
+        </div>
+    </footer>
+
+    <script>
+        // 1. Скрытие прелоадера
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // 2. Скролл хедера
+        window.onscroll = function() {
+            const header = document.getElementById('main-header');
+            if (window.pageYOffset > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        };
+
+        // 3. Плавный скролл к каталогу
+        function scrollToCatalog() {
+            document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 4. Логика корзины
+        let cartCount = 0;
+        function addToCart(btn) {
+            if (btn.classList.contains('added')) return;
+
+            // Обновляем счетчик
+            cartCount++;
+            document.getElementById('cart-count').textContent = cartCount;
+
+            // Меняем состояние кнопки
+            btn.textContent = 'Добавлено ✓';
+            btn.classList.add('added');
+
+            // Показываем уведомление
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 5. Обработка клика на лого (возврат наверх)
+        document.querySelector('.logo').onclick = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+    </script>
+</body>
+</html>
